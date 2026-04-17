@@ -1,0 +1,13 @@
+project_id = "dhlqfexodcjmykjhekwp"
+
+[functions.fetch-ai-news]
+verify_jwt = false
+
+[functions.subscribe-newsletter]
+verify_jwt = false
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.ai-content-generator]
+verify_jwt = false
