@@ -21,3 +21,57 @@ import Dashboard from "./pages/Dashboard";
 import VideoTemplates from "./pages/VideoTemplates";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminModeration from "./pages/admin/AdminModeration";
+import AdminSettings from "./pages/admin/AdminSettings";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="relative min-h-screen bg-background">
+            <FilmGrain />
+            <ThemeSwitcher />
+            <ChatBot />
+            <Routes>
+              {/* Admin routes (no Navbar, own sidebar layout) */}
+              <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="moderation" element={<AdminModeration />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
+
+              {/* Public routes with Navbar */}
+              <Route path="*" element={
+                <>
+                  <Navbar />
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/face-swap" element={<FaceSwap />} />
+                    <Route path="/voice-changer" element={<VoiceChanger />} />
+                    <Route path="/booking" element={<Booking />} />
+                    <Route path="/video-templates" element={<VideoTemplates />} />
+                    <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </>
+              } />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
+
+export default App;
