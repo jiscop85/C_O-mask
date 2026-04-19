@@ -109,6 +109,90 @@
     @apply tracking-wider;
   }
 
+  .tech-text {
+    font-family: var(--font-tech);
+    @apply tracking-wide;
+  }
+
+  /* Animated mesh gradient background */
+  .mesh-gradient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(var(--cinema-red) / 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 60% at 80% 20%, hsl(var(--cinema-purple) / 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 80% at 40% 80%, hsl(var(--cinema-blue) / 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 50% at 60% 60%, hsl(var(--cinema-gold) / 0.08) 0%, transparent 50%);
+    animation: mesh-shift 20s ease-in-out infinite;
+  }
+
+  @keyframes mesh-shift {
+    0%, 100% { 
+      filter: hue-rotate(0deg);
+      transform: scale(1);
+    }
+    25% {
+      filter: hue-rotate(10deg);
+      transform: scale(1.05);
+    }
+    50% { 
+      filter: hue-rotate(-5deg);
+      transform: scale(1);
+    }
+    75% {
+      filter: hue-rotate(5deg);
+      transform: scale(1.03);
+    }
+  }
+
+  /* Animated grid overlay */
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background-image: 
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    animation: grid-pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes grid-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.15; }
+  }
+
+  /* Floating orbs */
+  .floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    animation: float 15s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, hsl(var(--cinema-red) / 0.4) 0%, transparent 70%);
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, hsl(var(--cinema-purple) / 0.3) 0%, transparent 70%);
+    top: 50%;
+    right: 10%;
+    animation-delay: -5s;
+  }
+
 
 
   
