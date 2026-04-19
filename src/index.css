@@ -35,3 +35,80 @@
     --ring: 0 72% 51%;
 
     --radius: 0.75rem;
+
+
+
+    /* Custom cinematic tokens */
+    --cinema-black: 220 20% 4%;
+    --cinema-dark: 220 15% 8%;
+    --cinema-red: 0 72% 51%;
+    --cinema-crimson: 348 83% 47%;
+    --cinema-gold: 38 92% 50%;
+    --cinema-warm: 30 80% 90%;
+    --cinema-glow: 0 100% 60%;
+    --cinema-blue: 220 80% 55%;
+    --cinema-purple: 280 70% 50%;
+    --cinema-cyan: 180 80% 50%;
+
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-tech: 'Orbitron', sans-serif;
+
+    --sidebar-background: 220 15% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 72% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 0 72% 51%;
+  }
+
+  .dark {
+    --background: 220 20% 4%;
+    --foreground: 0 0% 95%;
+    --card: 220 15% 7%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 15% 7%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 220 10% 15%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 18%;
+    --input: 220 15% 12%;
+    --ring: 0 72% 51%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+  .cinema-text {
+    font-family: var(--font-display);
+    @apply tracking-wider;
+  }
+
+
+
+  
