@@ -74,3 +74,86 @@ const Settings = () => {
     setSaving(false);
   };
 
+  return (
+    <div className="min-h-screen pt-24 pb-12 px-4 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="fixed inset-0 mesh-gradient opacity-30" />
+      <div className="fixed top-1/4 -left-32 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+      <div className="fixed bottom-1/4 -right-32 w-64 h-64 bg-cinema-crimson/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      
+      <div className="max-w-2xl mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl font-display tracking-wider text-foreground mb-2">
+            Profile <span className="text-primary">Settings</span>
+          </h1>
+          <p className="text-muted-foreground">Customize your experience</p>
+        </motion.div>
+
+        <div className="space-y-6">
+          {/* Profile Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="neon-card bg-card/50 backdrop-blur-xl border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <User className="w-5 h-5 text-primary" />
+                  Profile Information
+                </CardTitle>
+                <CardDescription>Update your personal details</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Avatar */}
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-cinema-crimson p-0.5">
+                      <div className="w-full h-full rounded-full bg-card overflow-hidden flex items-center justify-center">
+                        {profile?.avatar_url ? (
+                          <img 
+                            src={profile.avatar_url} 
+                            alt="Avatar" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-10 h-10 text-muted-foreground" />
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingAvatar}
+                      className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/80 transition-colors"
+                    >
+                      {uploadingAvatar ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Camera className="w-4 h-4" />
+                      )}
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarUpload}
+                      className="hidden"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="displayName" className="text-foreground">Display Name</Label>
+                    <Input
+                      id="displayName"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="mt-1 bg-background/50 border-border/50 focus:border-primary"
+                    />
+                  </div>
+                </div>
+
+  
