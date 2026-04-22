@@ -301,3 +301,34 @@ const Settings = () => {
             </Card>
           </motion.div>
 
+          {/* Save Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full h-14 bg-gradient-to-r from-primary to-cinema-crimson hover:opacity-90 text-primary-foreground font-semibold text-lg"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-5 h-5 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Settings;
