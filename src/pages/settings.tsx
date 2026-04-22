@@ -156,4 +156,79 @@ const Settings = () => {
                   </div>
                 </div>
 
-  
+                {/* Email (read-only) */}
+                <div>
+                  <Label className="text-foreground">Email</Label>
+                  <Input
+                    value={user?.email || ''}
+                    disabled
+                    className="mt-1 bg-background/30 border-border/30 text-muted-foreground"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Language Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="neon-card bg-card/50 backdrop-blur-xl border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Globe className="w-5 h-5 text-primary" />
+                  Language & Region
+                </CardTitle>
+                <CardDescription>Choose your preferred language</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label className="text-foreground">Preferred Language</Label>
+                  <Select value={language} onValueChange={(v: 'en' | 'fa') => setLanguage(v)}>
+                    <SelectTrigger className="bg-background/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">🇺🇸 English</SelectItem>
+                      <SelectItem value="fa">🇮🇷 فارسی (Persian)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Processing Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="neon-card bg-card/50 backdrop-blur-xl border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Cpu className="w-5 h-5 text-primary" />
+                  Processing Preferences
+                </CardTitle>
+                <CardDescription>Configure how transformations are processed</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label className="text-foreground">Processing Mode</Label>
+                  <Select value={processingMode} onValueChange={(v: 'client' | 'server' | 'auto') => setProcessingMode(v)}>
+                    <SelectTrigger className="bg-background/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="auto">🔄 Auto (Recommended)</SelectItem>
+                      <SelectItem value="client">💻 Client-side (WebGPU)</SelectItem>
+                      <SelectItem value="server">☁️ Server-side</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Auto mode automatically selects the best option based on your device capabilities.
+                  </p>
+                </div>
+
