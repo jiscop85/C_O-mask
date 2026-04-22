@@ -232,3 +232,72 @@ const Settings = () => {
                   </p>
                 </div>
 
+
+                <div className="space-y-2">
+                  <Label className="text-foreground">Quality Preset</Label>
+                  <Select value={qualityPreset} onValueChange={(v: 'performance' | 'balanced' | 'quality') => setQualityPreset(v)}>
+                    <SelectTrigger className="bg-background/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="performance">⚡ Performance (Faster)</SelectItem>
+                      <SelectItem value="balanced">⚖️ Balanced</SelectItem>
+                      <SelectItem value="quality">✨ Quality (Best Results)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Notifications Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="neon-card bg-card/50 backdrop-blur-xl border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Bell className="w-5 h-5 text-primary" />
+                  Notifications
+                </CardTitle>
+                <CardDescription>Manage your notification preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Push Notifications</p>
+                    <p className="text-xs text-muted-foreground">Receive notifications about your transformations</p>
+                  </div>
+                  <Switch
+                    checked={notificationsEnabled}
+                    onCheckedChange={setNotificationsEnabled}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Email Confirmations</p>
+                    <p className="text-xs text-muted-foreground">Receive email confirmations for bookings</p>
+                  </div>
+                  <Switch
+                    checked={emailConfirmations}
+                    onCheckedChange={setEmailConfirmations}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Calendar Sync</p>
+                    <p className="text-xs text-muted-foreground">Sync bookings with your calendar</p>
+                  </div>
+                  <Switch
+                    checked={calendarSync}
+                    onCheckedChange={setCalendarSync}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
