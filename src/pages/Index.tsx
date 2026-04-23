@@ -200,4 +200,82 @@ const Index = () => {
             <p className="text-muted-foreground">Simple steps to transform your digital presence</p>
           </motion.div>
 
-     
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { step: '01', title: 'Upload', desc: 'Choose your target face or voice model', descPersian: 'چهره یا مدل صدای مورد نظر را انتخاب کنید' },
+              { step: '02', title: 'Process', desc: 'AI analyzes and prepares transformation', descPersian: 'هوش مصنوعی تحلیل و آماده‌سازی می‌کند' },
+              { step: '03', title: 'Transform', desc: 'Real-time face swap and voice change', descPersian: 'تعویض چهره و تغییر صدا به صورت زنده' },
+              { step: '04', title: 'Share', desc: 'Use in calls, streams, or recordings', descPersian: 'استفاده در تماس‌ها، استریم‌ها یا ضبط‌ها' },
+            ].map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="font-display text-6xl text-primary/20 mb-4">{item.step}</div>
+                <h3 className="font-display text-xl text-foreground mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground mb-1">{item.desc}</p>
+                <p className="text-xs text-muted-foreground/70" dir="rtl">{item.descPersian}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="cinema-card p-12 md:p-16 text-center relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10" />
+            <div className="relative z-10">
+              <h2 className="font-display text-4xl md:text-6xl text-foreground mb-4">
+                READY TO <span className="text-primary">TRANSFORM?</span>
+              </h2>
+              <p className="text-lg text-muted-foreground mb-2">
+                Join the future of digital identity
+              </p>
+              <p className="text-muted-foreground/70 mb-8" dir="rtl">
+                به آینده هویت دیجیتال بپیوندید
+              </p>
+              <Link to="/login">
+                <motion.button
+                  className="cinema-button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Get Started Free
+                </motion.button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 border-t border-border">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Film className="w-6 h-6 text-primary" />
+              <span className="font-display text-xl">C_O MASK</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              © 2025 C_O Mask. All rights reserved. | تمامی حقوق محفوظ است
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Index;
+
