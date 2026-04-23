@@ -144,4 +144,60 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
+            <motion.div
+              className="w-1 h-2 bg-primary rounded-full"
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
+      </section>
 
+      {/* Features Section */}
+      <section className="py-24 relative">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+              POWERFUL <span className="text-primary">FEATURES</span>
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto" dir="rtl">
+              ویژگی‌های قدرتمند برای تبدیل دیجیتال شما
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <FeatureCard key={feature.title} {...feature} delay={index * 0.1} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-24 bg-card/50 border-y border-border">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-display text-4xl md:text-5xl text-foreground mb-4">
+              HOW IT <span className="text-accent">WORKS</span>
+            </h2>
+            <p className="text-muted-foreground">Simple steps to transform your digital presence</p>
+          </motion.div>
+
+     
