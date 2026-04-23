@@ -66,4 +66,82 @@ const Index = () => {
               </span>
             </motion.div>
 
-      
+            {/* Main Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="font-display text-6xl md:text-8xl lg:text-9xl tracking-wider mb-4"
+            >
+              <span className="text-foreground">C_O</span>{' '}
+              <span className="text-primary glow-text">MASK</span>
+            </motion.h1>
+
+            {/* Persian Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl md:text-2xl text-accent gold-glow font-medium mb-4"
+              dir="rtl"
+            >
+              تبدیل سینمایی چهره و صدا
+            </motion.p>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
+            >
+              Experience the future of digital transformation. Real-time face swap and voice changing 
+              with cinema-quality results. Powered by cutting-edge AI.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            >
+              <Link to="/face-swap">
+                <motion.button
+                  className="cinema-button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Start Transforming
+                </motion.button>
+              </Link>
+              <Link to="/login">
+                <motion.button
+                  className="px-8 py-4 rounded-lg font-display tracking-widest text-lg uppercase border border-border text-foreground hover:bg-secondary transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Sign In
+                </motion.button>
+              </Link>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
+            >
+              {stats.map((stat, index) => (
+                <div key={stat.label} className="text-center">
+                  <stat.icon className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <div className="font-display text-3xl text-foreground">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+
+
