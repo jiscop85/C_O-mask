@@ -502,3 +502,178 @@ const FaceSwap = () => {
                 </div>
 
  
+                {/* WebGPU Status */}
+                <div className="pt-4 border-t border-border">
+                  <div className="flex items-center gap-2">
+                    {webGPUSupported === null ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                    ) : webGPUSupported ? (
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-yellow-500" />
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {webGPUSupported === null 
+                        ? 'Checking WebGPU...'
+                        : webGPUSupported 
+                          ? 'WebGPU Acceleration Active'
+                          : 'WebGPU Not Available'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* History Toggle */}
+            <motion.button
+              onClick={() => setShowHistory(!showHistory)}
+              className="w-full neon-card p-4 flex items-center justify-between hover:bg-secondary/30 transition-colors"
+              whileHover={{ scale: 1.01 }}
+            >
+              <div className="flex items-center gap-3">
+                <History className="w-5 h-5 text-primary" />
+                <span className="font-display text-foreground">HISTORY</span>
+              </div>
+              <span className="text-sm text-muted-foreground">{history.length} items</span>
+            </motion.button>
+          </motion.div>
+
+          {/* Video Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="lg:col-span-2"
+          >
+            <div className="neon-card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-display text-xl text-foreground flex items-center gap-2">
+                  <MonitorPlay className="w-5 h-5 text-primary" />
+                  LIVE PREVIEW
+                </h2>
+                <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${isStreaming ? 'bg-green-500/20' : 'bg-muted'}`}>
+                  <div className={`w-2 h-2 rounded-full ${isStreaming ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground'}`} />
+                  <span className="text-sm text-muted-foreground tech-text">
+                    {isStreaming ? (isProcessing ? 'PROCESSING' : 'LIVE') : 'OFFLINE'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-cinema-dark">
+                {/* Decorative corners */}
+                <div className="absolute top-2 left-2 w-8 h-8 border-l-2 border-t-2 border-primary/50 rounded-tl-lg" />
+                <div className="absolute top-2 right-2 w-8 h-8 border-r-2 border-t-2 border-primary/50 rounded-tr-lg" />
+                <div className="absolute bottom-2 left-2 w-8 h-8 border-l-2 border-b-2 border-primary/50 rounded-bl-lg" />
+                <div className="absolute bottom-2 right-2 w-8 h-8 border-r-2 border-b-2 border-primary/50 rounded-br-lg" />
+
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover"
+                />
+                <canvas ref={canvasRef} className="hidden" />
+                <canvas ref={outputCanvasRef} className="absolute inset-0 w-full h-full hidden" />
+                
+                <AnimatePresence>
+                  {!isStreaming && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex flex-col items-center justify-center bg-cinema-dark/90"
+                    >
+                      <motion.div
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                        className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6"
+                      >
+                        <Camera className="w-12 h-12 text-primary" />
+                      </motion.div>
+                      <p className="text-muted-foreground text-lg">Camera preview will appear here</p>
+                      <p className="text-sm text-muted-foreground/70 mt-2" dir="rtl">پیش‌نمایش دوربین اینجا نمایش داده می‌شود</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Processing overlay */}
+                {isProcessing && (
+                  <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-background/80 backdrop-blur-sm">
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    <span className="text-sm text-foreground tech-text">Processing at {stats.fps} FPS</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Info Panel */}
+              <motion.div
+                className="mt-6 p-5 rounded-2xl holographic border border-border/50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-cinema-crimson flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg text-foreground mb-2">POWERED BY INSIGHTFACE + ONNX</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Using inswapper_128 model with {webGPUSupported ? 'WebGPU' : 'WebGL'} acceleration. 
+                      {processingMode === 'client' 
+                        ? ' All processing happens locally in your browser for maximum privacy.'
+                        : ' Server-side GPU processing for optimal quality and speed.'}
+                    </p>
+                    <p className="text-xs text-muted-foreground/70 mt-2" dir="rtl">
+                      استفاده از مدل inswapper_128 با شتاب‌دهی {webGPUSupported ? 'WebGPU' : 'WebGL'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* History Panel */}
+        <AnimatePresence>
+          {showHistory && history.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-8"
+            >
+              <div className="neon-card p-6">
+                <h3 className="font-display text-xl text-foreground mb-4">TRANSFORMATION HISTORY</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {history.slice(0, 12).map((record) => (
+                    <motion.div
+                      key={record.id}
+                      className="relative group aspect-square rounded-xl overflow-hidden bg-secondary"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {record.result_url && (
+                        <img src={record.result_url} alt="Result" className="w-full h-full object-cover" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                        <button
+                          onClick={() => deleteRecord(record.id)}
+                          className="p-2 rounded-lg bg-destructive/80 text-white hover:bg-destructive transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+export default FaceSwap;
