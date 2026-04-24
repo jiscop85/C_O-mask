@@ -186,3 +186,116 @@ const FaceSwap = () => {
       console.error('Server processing error:', error);
     }
   }, [targetImage]);
+
+  
+  // Animation loop
+  const startProcessing = useCallback(() => {
+    if (!isStreaming || !targetImage) {
+      toast.error('Please start camera and upload a target face first');
+      return;
+    }
+
+    setIsProcessing(true);
+    lastFrameTime.current = performance.now();
+    frameCount.current = 0;
+
+    const processLoop = async () => {
+      if (processingMode === 'client') {
+        await processFrameClient();
+      } else {
+        await processFrameServer();
+      }
+      
+      if (isProcessing) {
+        animationRef.current = requestAnimationFrame(processLoop);
+      }
+    };
+
+    processLoop();
+    toast.success('Face swap processing started!');
+  }, [isStreaming, targetImage, processingMode, processFrameClient, processFrameServer, isProcessing]);
+
+  const stopProcessing = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    setIsProcessing(false);
+    toast.info('Processing stopped');
+  }, []);
+
+  const saveSnapshot = async () => {
+    if (!canvasRef.current) return;
+    
+    const dataUrl = canvasRef.current.toDataURL('image/png');
+    
+    // Save to history
+    await addRecord({
+      transformation_type: 'face_swap',
+      source_image_url: null,
+      target_image_url: targetImage,
+      result_url: dataUrl,
+      processing_time_ms: stats.latency,
+      processing_mode: processingMode,
+      metadata: { fps: stats.fps, framesProcessed: stats.framesProcessed }
+    });
+
+    // Download
+    const link = document.createElement('a');
+    link.download = `face-swap-${Date.now()}.png`;
+    link.href = dataUrl;
+    link.click();
+    
+    toast.success('Snapshot saved!');
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, [stopCamera]);
+
+  return (
+    <div className="min-h-screen pt-24 pb-12 relative">
+      {/* Animated Background */}
+      <div className="mesh-gradient" />
+      <div className="grid-overlay" />
+      
+      {/* Floating Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="floating-orb orb-1" />
+        <div className="floating-orb orb-2" />
+        <div className="floating-orb orb-3" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6"
+          >
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm tech-text text-muted-foreground">AI-POWERED TRANSFORMATION</span>
+          </motion.div>
+
+          <h1 className="font-display text-5xl md:text-7xl text-foreground mb-4 glow-text">
+            REAL-TIME <span className="text-primary">FACE SWAP</span>
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            Transform your face in real-time with cutting-edge AI technology.
+            {webGPUSupported ? ' WebGPU acceleration enabled!' : ''}
+          </p>
+          <p className="text-sm text-muted-foreground/70 mt-2" dir="rtl">
+            تعویض چهره در لحظه با فناوری هوش مصنوعی پیشرفته
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+   
