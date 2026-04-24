@@ -407,5 +407,98 @@ const FaceSwap = () => {
                 </p>
               </div>
           
+   {/* Camera Controls */}
+              <div className="space-y-3">
+                <motion.button
+                  onClick={isStreaming ? stopCamera : startCamera}
+                  className={`w-full cinema-button flex items-center justify-center gap-2 ${
+                    isStreaming ? '!bg-gradient-to-r !from-destructive !to-destructive/80' : ''
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {isStreaming ? (
+                    <>
+                      <Pause className="w-5 h-5" />
+                      STOP CAMERA
+                    </>
+                  ) : (
+                    <>
+                      <Camera className="w-5 h-5" />
+                      START CAMERA
+                    </>
+                  )}
+                </motion.button>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.button
+                    onClick={isProcessing ? stopProcessing : startProcessing}
+                    disabled={!isStreaming || !targetImage}
+                    className={`px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
+                      isProcessing
+                        ? 'bg-accent text-accent-foreground'
+                        : 'bg-secondary text-foreground hover:bg-secondary/80'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm">Processing</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" />
+                        <span className="text-sm">Start</span>
+                      </>
+                    )}
+                  </motion.button>
+
+                  <motion.button
+                    onClick={saveSnapshot}
+                    disabled={!isStreaming}
+                    className="px-4 py-3 rounded-xl bg-secondary text-foreground flex items-center justify-center gap-2 hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Download className="w-4 h-4" />
+                    <span className="text-sm">Save</span>
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="neon-card p-6"
+            >
+              <h3 className="font-display text-lg text-foreground flex items-center gap-2 mb-4">
+                <Gauge className="w-5 h-5 text-accent" />
+                PERFORMANCE
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground tech-text">FPS</span>
+                  <span className="text-lg font-bold text-accent tech-text">{stats.fps || '--'}</span>
+                </div>
+                <div className="h-1 bg-secondary rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-primary to-accent"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min((stats.fps / 60) * 100, 100)}%` }}
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground tech-text">LATENCY</span>
+                  <span className="text-lg font-bold text-foreground tech-text">{stats.latency || '--'} ms</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground tech-text">FRAMES</span>
+                  <span className="text-lg font-bold text-foreground tech-text">{stats.framesProcessed}</span>
+                </div>
 
  
