@@ -98,3 +98,91 @@ const FaceSwap = () => {
     }
   };
 
+  // Process frame - client-side placeholder (would use ONNX/WebGPU in real implementation)
+  const processFrameClient = useCallback(async () => {
+    if (!videoRef.current || !canvasRef.current || !targetImage) return;
+
+    const ctx = canvasRef.current.getContext('2d');
+    if (!ctx) return;
+
+    const startTime = performance.now();
+    
+    // Draw current video frame
+    canvasRef.current.width = videoRef.current.videoWidth;
+    canvasRef.current.height = videoRef.current.videoHeight;
+    ctx.drawImage(videoRef.current, 0, 0);
+
+    // Placeholder for WebGPU/ONNX face swap processing
+    // In real implementation, this would:
+    // 1. Detect faces using InsightFace
+    // 2. Extract face embeddings
+    // 3. Swap faces using inswapper model
+    // 4. Apply result to output canvas
+
+    const endTime = performance.now();
+    const latency = endTime - startTime;
+    
+    frameCount.current++;
+    const now = performance.now();
+    if (now - lastFrameTime.current >= 1000) {
+      setStats(prev => ({
+        ...prev,
+        fps: frameCount.current,
+        latency: Math.round(latency),
+        framesProcessed: prev.framesProcessed + frameCount.current
+      }));
+      frameCount.current = 0;
+      lastFrameTime.current = now;
+    }
+  }, [targetImage]);
+
+  // Process frame via server
+  const processFrameServer = useCallback(async () => {
+    if (!videoRef.current || !canvasRef.current || !targetImage) return;
+
+    const ctx = canvasRef.current.getContext('2d');
+    if (!ctx) return;
+
+    canvasRef.current.width = videoRef.current.videoWidth;
+    canvasRef.current.height = videoRef.current.videoHeight;
+    ctx.drawImage(videoRef.current, 0, 0);
+
+    const sourceImage = canvasRef.current.toDataURL('image/jpeg', 0.8);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('face-swap', {
+        body: {
+          sourceImage,
+          targetImage,
+          processingMode: 'server'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.fallbackToClient) {
+        toast.info('Server unavailable, using client-side processing');
+        setProcessingMode('client');
+        return;
+      }
+
+      if (data.success && data.resultImage && outputCanvasRef.current) {
+        const img = new Image();
+        img.onload = () => {
+          const outCtx = outputCanvasRef.current?.getContext('2d');
+          if (outCtx) {
+            outCtx.drawImage(img, 0, 0);
+          }
+        };
+        img.src = data.resultImage;
+        
+        setStats(prev => ({
+          ...prev,
+          latency: data.processingTimeMs || prev.latency,
+          framesProcessed: prev.framesProcessed + 1
+        }));
+      }
+    } catch (error) {
+      console.error('Server processing error:', error);
+    }
+  }, [targetImage]);
