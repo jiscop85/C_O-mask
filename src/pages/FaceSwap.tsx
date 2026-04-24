@@ -299,3 +299,112 @@ const FaceSwap = () => {
 
         <div className="grid lg:grid-cols-3 gap-8">
    
+       {/* Control Panel */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-1 space-y-6"
+          >
+            {/* Main Controls */}
+            <div className="neon-card p-6">
+              <h2 className="font-display text-xl text-foreground flex items-center gap-2 mb-6">
+                <Settings className="w-5 h-5 text-primary" />
+                CONTROLS
+              </h2>
+
+              {/* Target Face Upload */}
+              <div className="mb-6">
+                <label className="block text-sm text-muted-foreground mb-3 tech-text">TARGET FACE</label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <motion.button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full aspect-square rounded-2xl border-2 border-dashed border-border hover:border-primary/50 transition-all duration-300 flex flex-col items-center justify-center gap-3 overflow-hidden group relative"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {targetImage ? (
+                    <>
+                      <img src={targetImage} alt="Target" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-primary" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <Upload className="w-8 h-8 text-primary" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">Upload target face</span>
+                      <span className="text-xs text-muted-foreground/70" dir="rtl">آپلود چهره مورد نظر</span>
+                    </>
+                  )}
+                </motion.button>
+                {targetImage && (
+                  <button
+                    onClick={() => setTargetImage(null)}
+                    className="mt-2 text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Remove target
+                  </button>
+                )}
+              </div>
+
+              {/* Processing Mode */}
+              <div className="mb-6">
+                <label className="block text-sm text-muted-foreground mb-3 tech-text">PROCESSING MODE</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.button
+                    onClick={() => setProcessingMode('client')}
+                    className={`p-4 rounded-xl text-sm font-medium transition-all relative overflow-hidden ${
+                      processingMode === 'client'
+                        ? 'bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/50'
+                        : 'bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Cpu className="w-5 h-5 mx-auto mb-2" />
+                    <span className="block tech-text text-xs">CLIENT</span>
+                    {processingMode === 'client' && (
+                      <motion.div
+                        layoutId="mode-indicator"
+                        className="absolute inset-0 border-2 border-primary rounded-xl"
+                      />
+                    )}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => setProcessingMode('server')}
+                    className={`p-4 rounded-xl text-sm font-medium transition-all relative overflow-hidden ${
+                      processingMode === 'server'
+                        ? 'bg-gradient-to-br from-primary/20 to-primary/5 text-primary border border-primary/50'
+                        : 'bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Server className="w-5 h-5 mx-auto mb-2" />
+                    <span className="block tech-text text-xs">SERVER</span>
+                    {processingMode === 'server' && (
+                      <motion.div
+                        layoutId="mode-indicator"
+                        className="absolute inset-0 border-2 border-primary rounded-xl"
+                      />
+                    )}
+                  </motion.button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  {processingMode === 'client' 
+                    ? '🔒 Privacy-first: All processing in your browser'
+                    : '⚡ High quality: Uses server GPU for best results'}
+                </p>
+              </div>
+
+ 
