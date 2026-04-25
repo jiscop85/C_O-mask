@@ -362,4 +362,33 @@ const Dashboard = () => {
             RECENT TRANSFORMATIONS
           </h2>
 
-
+          {loading ? (
+            <div className="neon-card p-12 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : recentTransformations.length > 0 ? (
+            <div className="neon-card overflow-hidden">
+              <div className="divide-y divide-border/50">
+                {recentTransformations.map((record, index) => {
+                  const metadata = record.metadata as Record<string, unknown>;
+                  const isFaceSwap = record.transformation_type === 'face_swap';
+                  
+                  return (
+                    <motion.div
+                      key={record.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 + 0.9 }}
+                      className="p-4 flex items-center gap-4 hover:bg-secondary/30 transition-colors"
+                    >
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        isFaceSwap ? 'bg-primary/20' : 'bg-purple-500/20'
+                      }`}>
+                        {isFaceSwap ? (
+                          <Film className="w-6 h-6 text-primary" />
+                        ) : (
+                          <Mic2 className="w-6 h-6 text-purple-400" />
+                        )}
+                      </div>
+                      
+           
