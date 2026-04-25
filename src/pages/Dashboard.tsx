@@ -208,6 +208,89 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground mt-1">Last 7 days performance</p>
               </div>
             </div>
-
  ashboard;
+           <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorFaceSwaps" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(38, 92%, 50%)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(38, 92%, 50%)" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorVoiceChanges" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(280, 70%, 50%)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(280, 70%, 50%)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="faceSwaps" 
+                    stroke="hsl(38, 92%, 50%)" 
+                    fillOpacity={1} 
+                    fill="url(#colorFaceSwaps)"
+                    name="Face Swaps"
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="voiceChanges" 
+                    stroke="hsl(280, 70%, 50%)" 
+                    fillOpacity={1} 
+                    fill="url(#colorVoiceChanges)"
+                    name="Voice Changes"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
 
+          {/* Pie Chart */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="neon-card p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-display text-xl text-foreground flex items-center gap-2">
+                <PieChart className="w-5 h-5 text-accent" />
+                BREAKDOWN
+              </h2>
+            </div>
+
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPie>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={70}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                    }}
+                  />
+                </RechartsPie>
+              </ResponsiveContainer>
+            </div>
