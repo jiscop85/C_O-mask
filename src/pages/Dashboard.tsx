@@ -294,3 +294,72 @@ const Dashboard = () => {
                 </RechartsPie>
               </ResponsiveContainer>
             </div>
+            
+            <div className="space-y-3 mt-4">
+              {pieData.map((item) => (
+                <div key={item.name} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="text-sm text-muted-foreground">{item.name}</span>
+                  </div>
+                  <span className="text-sm font-medium text-foreground">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mb-12"
+        >
+          <h2 className="font-display text-2xl text-foreground mb-6 flex items-center gap-3">
+            <Zap className="w-6 h-6 text-accent" />
+            QUICK ACTIONS
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {quickActions.map((action, index) => (
+              <motion.div
+                key={action.path}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 + 0.7 }}
+              >
+                <Link to={action.path}>
+                  <motion.div
+                    className="neon-card p-6 group cursor-pointer h-full"
+                    whileHover={{ scale: 1.02, y: -5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center mb-4 group-hover:shadow-lg transition-shadow`}>
+                      <action.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="font-display text-xl text-foreground mb-1 flex items-center gap-2">
+                      {action.title}
+                      <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-accent" />
+                    </h3>
+                    <p className="text-xs text-muted-foreground/70 mb-2" dir="rtl">{action.titlePersian}</p>
+                    <p className="text-sm text-muted-foreground">{action.description}</p>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Recent Transformations */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <h2 className="font-display text-2xl text-foreground mb-6 flex items-center gap-3">
+            <Clock className="w-6 h-6 text-accent" />
+            RECENT TRANSFORMATIONS
+          </h2>
+
+
