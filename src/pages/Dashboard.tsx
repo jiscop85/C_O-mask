@@ -163,4 +163,51 @@ const Dashboard = () => {
             تبدیل‌های خود را پیگیری کنید، عملکرد را مانیتور کنید
           </p>
         </motion.div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {[
+            { label: 'Total Transformations', labelPersian: 'کل تبدیل‌ها', value: animatedStats.total, icon: Sparkles, color: 'text-accent' },
+            { label: 'Face Swaps', labelPersian: 'تغییر چهره', value: animatedStats.faceSwaps, icon: Image, color: 'text-primary' },
+            { label: 'Voice Changes', labelPersian: 'تغییر صدا', value: animatedStats.voiceChanges, icon: Wand2, color: 'text-purple-400' },
+            { label: 'Avg. Processing (ms)', labelPersian: 'زمان پردازش', value: animatedStats.avgTime, icon: Clock, color: 'text-emerald-400' },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 + 0.3 }}
+              className="neon-card p-6"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 rounded-xl bg-secondary flex items-center justify-center`}>
+                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                </div>
+                <TrendingUp className="w-4 h-4 text-emerald-400" />
+              </div>
+              <p className={`text-4xl font-display ${stat.color} mb-2`}>{stat.value.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-xs text-muted-foreground/70" dir="rtl">{stat.labelPersian}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8 mb-12">
+          {/* Activity Chart */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="lg:col-span-2 neon-card p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="font-display text-xl text-foreground flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-accent" />
+                  ACTIVITY OVERVIEW
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">Last 7 days performance</p>
+              </div>
+            </div>
+
+ ashboard;
 
