@@ -390,5 +390,48 @@ const Dashboard = () => {
                           <Mic2 className="w-6 h-6 text-purple-400" />
                         )}
                       </div>
+                                 <div className="flex-1">
+                        <p className="font-medium text-foreground capitalize">
+                          {record.transformation_type.replace('_', ' ')}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {isFaceSwap 
+                            ? `Mode: ${(metadata?.processing_mode as string) || 'Auto'}`
+                            : `Model: ${(metadata?.model as string) || 'Default'}`
+                          }
+                        </p>
+                      </div>
                       
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(record.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="text-xs text-muted-foreground/70">
+                          {record.processing_time_ms}ms
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="neon-card p-12 text-center">
+              <Sparkles className="w-12 h-12 text-accent mx-auto mb-4" />
+              <h3 className="font-display text-xl text-foreground mb-2">NO TRANSFORMATIONS YET</h3>
+              <p className="text-muted-foreground mb-4">Start creating amazing transformations!</p>
+              <Link to="/face-swap" className="cinema-button inline-flex items-center gap-2">
+                <Film className="w-4 h-4" />
+                Start Now
+              </Link>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default D
+
            
