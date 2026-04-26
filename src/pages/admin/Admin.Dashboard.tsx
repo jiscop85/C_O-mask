@@ -60,4 +60,42 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchStats();
 
+        // Subscribe to realtime changes
+    const channel = supabase
+      .channel('admin-dashboard-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transformation_history' }, () => fetchStats())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => fetchStats())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'booking_sessions' }, () => fetchStats())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchStats]);
+
+  const statCards = [
+    { label: 'Total Users', value: stats.totalUsers, icon: Users, color: 'text-blue-400' },
+    { label: 'Transformations', value: stats.totalTransformations, icon: Activity, color: 'text-accent' },
+    { label: 'Bookings', value: stats.totalBookings, icon: Clock, color: 'text-green-400' },
+    { label: 'Avg Process (ms)', value: stats.avgProcessingTime, icon: TrendingUp, color: 'text-purple-400' },
+  ];
+
+  return (
+    <div className="p-6 space-y-6">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-display text-foreground tracking-wider">ADMIN OVERVIEW</h1>
+          <p className="text-muted-foreground flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+            </span>
+            Live — updated {lastUpdate.toLocaleTimeString()}
+          </p>
+        </div>
+        <button onClick={fetchStats} className="p-2 rounded-lg hover:bg-secondary/60 text-muted-foreground hover:text-foreground transition-colors">
+          <RefreshCw className="w-5 h-5" />
+        </button>
+      </motion.div>
+
 
