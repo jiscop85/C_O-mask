@@ -193,3 +193,98 @@ const themes = [
     },
   },
 ];
+
+
+export default function ThemeSwitcher() {
+  const [open, setOpen] = useState(false);
+  const [current, setCurrent] = useState('cinematic-red');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('co-mask-theme');
+    if (saved) {
+      setCurrent(saved);
+      applyTheme(saved);
+    }
+  }, []);
+
+  const applyTheme = useCallback((key: string) => {
+    const theme = themes.find((t) => t.key === key);
+    if (!theme) return;
+    const root = document.documentElement;
+    Object.entries(theme.vars).forEach(([prop, val]) => {
+      root.style.setProperty(prop, val);
+    });
+  }, []);
+
+  const selectTheme = (key: string) => {
+    setCurrent(key);
+    localStorage.setItem('co-mask-theme', key);
+    applyTheme(key);
+  };
+
+  return (
+    <>
+      {/* Floating button */}
+      <motion.button
+        onClick={() => setOpen(!open)}
+        className="fixed bottom-6 right-6 z-[10001] w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        style={{ boxShadow: '0 0 30px hsl(var(--primary) / 0.5)' }}
+      >
+        <AnimatePresence mode="wait">
+          {open ? (
+            <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+              <X className="w-6 h-6" />
+            </motion.div>
+          ) : (
+            <motion.div key="p" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+              <Palette className="w-6 h-6" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+
+      {/* Theme panel */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="fixed bottom-24 right-6 z-[10001] w-64 rounded-2xl border border-border bg-card/95 backdrop-blur-xl p-4 shadow-2xl"
+          >
+            <p className="text-sm font-display tracking-wider text-foreground mb-3">THEME</p>
+            <div className="space-y-2">
+              {themes.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => selectTheme(t.key)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                    current === t.key
+                      ? 'bg-primary/15 ring-1 ring-primary/50'
+                      : 'hover:bg-secondary/60'
+                  }`}
+                >
+                  <div className="flex -space-x-1">
+                    {t.preview.map((c, i) => (
+                      <div
+                        key={i}
+                        className="w-5 h-5 rounded-full border-2 border-card"
+                        style={{ backgroundColor: c }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-foreground font-medium">{t.name}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+
