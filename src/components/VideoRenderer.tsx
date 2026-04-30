@@ -208,3 +208,91 @@ export default function VideoRenderer({ storyboard, aspectRatio = '16:9', gradie
       }
     }
 
+
+    // Timeline bar
+    const totalP = time / totalDuration;
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fillRect(0, cH - 4, cW, 4);
+    const timeGrad = ctx.createLinearGradient(0, 0, cW * totalP, 0);
+    timeGrad.addColorStop(0, colors[0]);
+    timeGrad.addColorStop(1, colors[1]);
+    ctx.fillStyle = timeGrad;
+    ctx.fillRect(0, cH - 4, cW * totalP, 4);
+
+    setCurrentScene(index);
+    setProgress(totalP * 100);
+  }, [storyboard, cW, cH, totalDuration]);
+
+  const animate = useCallback((timestamp: number) => {
+    if (!startTimeRef.current) startTimeRef.current = timestamp;
+    const elapsed = (timestamp - startTimeRef.current) / 1000;
+
+    if (elapsed >= totalDuration) {
+      setIsPlaying(false);
+      setProgress(100);
+      return;
+    }
+
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) drawScene(ctx, elapsed);
+
+    animFrameRef.current = requestAnimationFrame(animate);
+  }, [drawScene, totalDuration]);
+
+  const play = useCallback(() => {
+    startTimeRef.current = 0;
+    setIsPlaying(true);
+    animFrameRef.current = requestAnimationFrame(animate);
+  }, [animate]);
+
+  const pause = () => {
+    cancelAnimationFrame(animFrameRef.current);
+    setIsPlaying(false);
+  };
+
+  const restart = () => {
+    cancelAnimationFrame(animFrameRef.current);
+    startTimeRef.current = 0;
+    setProgress(0);
+    setCurrentScene(0);
+    play();
+  };
+
+  useEffect(() => {
+    // Draw first frame
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) drawScene(ctx, 0);
+  }, [drawScene]);
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, []);
+
+  const downloadVideo = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setIsRendering(true);
+
+    try {
+      const stream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+
+      const done = new Promise<void>((resolve) => { recorder.onstop = () => resolve(); });
+      recorder.start(100);
+
+      // Render all frames
+      const fps = 30;
+      const totalFrames = Math.ceil(totalDuration * fps);
+      for (let f = 0; f < totalFrames; f++) {
+        const t = f / fps;
+        const ctx = canvas.getContext('2d');
+        if (ctx) drawScene(ctx, t);
+        await new Promise(r => setTimeout(r, 1000 / fps));
+      }
+
+      recorder.stop();
+      await done;
+
+    
