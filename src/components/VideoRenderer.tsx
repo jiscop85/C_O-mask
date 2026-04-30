@@ -102,4 +102,109 @@ export default function VideoRenderer({ storyboard, aspectRatio = '16:9', gradie
       ctx.translate(-cW / 2, -cH / 2);
     }
 
-    
+    // Animated geometric shapes
+    const shapeCount = 5 + index * 2;
+    for (let i = 0; i < shapeCount; i++) {
+      const seed = i * 137.5 + index * 42;
+      const x = ((Math.sin(seed) + 1) / 2) * cW;
+      const y = ((Math.cos(seed * 1.3) + 1) / 2) * cH;
+      const size = 20 + (seed % 80);
+      const moveX = Math.sin(time * 0.5 + seed) * 30;
+      const moveY = Math.cos(time * 0.7 + seed) * 20;
+      const alpha = 0.08 + Math.sin(time + seed) * 0.04;
+
+      ctx.fillStyle = colors[i % 2 === 0 ? 0 : 1] + Math.round(alpha * 255).toString(16).padStart(2, '0');
+      ctx.beginPath();
+      if (i % 3 === 0) {
+        ctx.arc(x + moveX, y + moveY, size, 0, Math.PI * 2);
+      } else if (i % 3 === 1) {
+        ctx.roundRect(x + moveX - size / 2, y + moveY - size / 2, size, size, size * 0.2);
+      } else {
+        ctx.moveTo(x + moveX, y + moveY - size);
+        ctx.lineTo(x + moveX + size * 0.87, y + moveY + size * 0.5);
+        ctx.lineTo(x + moveX - size * 0.87, y + moveY + size * 0.5);
+        ctx.closePath();
+      }
+      ctx.fill();
+    }
+
+    // Particle system
+    for (let i = 0; i < 30; i++) {
+      const px = ((Math.sin(i * 73 + time * 0.3) + 1) / 2) * cW;
+      const py = ((Math.cos(i * 91 + time * 0.2) + 1) / 2) * cH;
+      const pSize = 1 + Math.sin(time * 2 + i) * 1.5;
+      ctx.fillStyle = `rgba(255,255,255,${0.1 + Math.sin(time + i) * 0.08})`;
+      ctx.beginPath();
+      ctx.arc(px, py, Math.max(0.5, pSize), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore();
+
+    // Scene number badge
+    const badgeW = 100, badgeH = 32;
+    ctx.fillStyle = colors[0] + 'cc';
+    ctx.beginPath();
+    ctx.roundRect(20, 20, badgeW, badgeH, 8);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Scene ${scene.sceneNumber}`, 20 + badgeW / 2, 20 + badgeH / 2 + 5);
+
+    // Description text
+    const textAlpha = Math.min(1, p * 4) * Math.min(1, (1 - p) * 4);
+    ctx.globalAlpha = Math.max(0, textAlpha);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `bold ${Math.min(28, cW * 0.035)}px sans-serif`;
+    ctx.textAlign = 'center';
+    const words = scene.description.split(' ');
+    const lines: string[] = [];
+    let line = '';
+    const maxLineW = cW * 0.8;
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxLineW) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    const lineH = 36;
+    const textY = cH / 2 - (lines.length * lineH) / 2;
+    lines.forEach((l, i) => {
+      ctx.fillText(l, cW / 2, textY + i * lineH);
+    });
+    ctx.globalAlpha = 1;
+
+    // Text overlay
+    if (scene.textOverlay) {
+      const overlayAlpha = Math.max(0, Math.min(1, (p - 0.3) * 5) * Math.min(1, (1 - p) * 3));
+      ctx.globalAlpha = overlayAlpha;
+      ctx.font = `italic ${Math.min(18, cW * 0.022)}px sans-serif`;
+      ctx.fillStyle = colors[1];
+      ctx.fillText(`"${scene.textOverlay}"`, cW / 2, cH * 0.75);
+      ctx.globalAlpha = 1;
+    }
+
+    // Camera movement label
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(`🎬 ${scene.cameraMovement}`, cW - 20, cH - 20);
+
+    // Transition overlay
+    if (scene.transition && p > 0.85) {
+      const fadeP = (p - 0.85) / 0.15;
+      const trans = scene.transition.toLowerCase();
+      if (trans.includes('fade')) {
+        ctx.fillStyle = `rgba(0,0,0,${fadeP * 0.7})`;
+        ctx.fillRect(0, 0, cW, cH);
+      } else if (trans.includes('wipe')) {
+        ctx.fillStyle = `rgba(0,0,0,0.8)`;
+        ctx.fillRect(0, 0, cW * fadeP, cH);
+      }
+    }
+
