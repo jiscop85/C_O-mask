@@ -295,4 +295,66 @@ export default function VideoRenderer({ storyboard, aspectRatio = '16:9', gradie
       recorder.stop();
       await done;
 
-    
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${storyboard.title?.replace(/\s+/g, '-') || 'video'}.webm`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Render error:', err);
+    } finally {
+      setIsRendering(false);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4"
+    >
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-bold text-foreground">Video Preview</h3>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Scene {currentScene + 1}/{storyboard.scenes.length}</span>
+          <span>•</span>
+          <span>{Math.round(progress)}%</span>
+        </div>
+      </div>
+
+      <div className="rounded-xl overflow-hidden border border-border/50 bg-black">
+        <canvas
+          ref={canvasRef}
+          width={cW}
+          height={cH}
+          className="w-full"
+          style={{ aspectRatio: aspectRatio.replace(':', '/') }}
+        />
+      </div>
+
+      <Progress value={progress} className="h-1.5" />
+
+      <div className="flex items-center gap-3">
+        {isPlaying ? (
+          <Button size="sm" variant="outline" onClick={pause}>
+            <Pause className="w-4 h-4 mr-2" />Pause
+          </Button>
+        ) : (
+          <Button size="sm" onClick={play} className={`bg-gradient-to-r ${gradient || 'from-violet-500 to-pink-500'} border-0 text-white`}>
+            <Play className="w-4 h-4 mr-2" />Play
+          </Button>
+        )}
+        <Button size="sm" variant="outline" onClick={restart}>
+          <RotateCcw className="w-4 h-4 mr-2" />Restart
+        </Button>
+        <Button size="sm" variant="outline" onClick={downloadVideo} disabled={isRendering}>
+          {isRendering ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+          {isRendering ? 'Rendering...' : 'Download'}
+        </Button>
+      </div>
+    </motion.div>
+  );
+}
+
