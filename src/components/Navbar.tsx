@@ -87,4 +87,96 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-1 ml-4 border-l border-border/50 pl-4">
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Link to="/admin" className="relative px-3 py-2 group">
+                      <motion.div className="flex items-center gap-2" whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
+                        <Shield className="w-4 h-4 text-primary" />
+                      </motion.div>
+                    </Link>
+                  )}
+                  <Link to="/settings" className="relative px-3 py-2 group">
+                    <motion.div
+                      className="flex items-center gap-2"
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Settings className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                    </motion.div>
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="relative px-4 py-2 group">
+                  <motion.div
+                    className="flex items-center gap-2"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <LogIn className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
+                    <span className="font-medium text-sm text-muted-foreground group-hover:text-foreground">
+                      Sign In
+                    </span>
+                  </motion.div>
+                </Link>
+              )}
+            </div>
+          </div>
 
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="md:hidden p-2 text-foreground"
+            onClick={() => setIsOpen(!isOpen)}
+            whileTap={{ scale: 0.9 }}
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-card/95 backdrop-blur-xl border-b border-border"
+          >
+            <div className="container mx-auto px-6 py-4 flex flex-col gap-2">
+              {navItems.map((item, index) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+                
+                return (
+                  <motion.div
+                    key={item.path}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                        isActive 
+                          ? 'bg-primary/10 text-primary' 
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="font-medium">{item.label}</span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+
+        
