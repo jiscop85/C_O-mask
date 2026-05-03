@@ -278,4 +278,76 @@ export default function BatchAudioProcessor({ settings, processAudioFn }: BatchA
                 }`}
               >
 
+                {/* Status Icon */}
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                  {audioFile.status === 'completed' && <CheckCircle2 className="w-5 h-5 text-green-500" />}
+                  {audioFile.status === 'failed' && <AlertCircle className="w-5 h-5 text-destructive" />}
+                  {audioFile.status === 'processing' && <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />}
+                  {audioFile.status === 'pending' && <FileAudio className="w-5 h-5 text-muted-foreground" />}
+                </div>
 
+                {/* File Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{audioFile.name}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">{formatFileSize(audioFile.size)}</span>
+                    {audioFile.error && <span className="text-xs text-destructive">{audioFile.error}</span>}
+                  </div>
+                  {audioFile.status === 'processing' && (
+                    <Progress value={audioFile.progress} className="h-1 mt-1" />
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-1">
+                  {audioFile.status === 'completed' && audioFile.processedBlob && (
+                    <Button size="icon" variant="ghost" onClick={() => downloadFile(audioFile)} className="text-green-500 hover:text-green-400">
+                      <Download className="w-4 h-4" />
+                    </Button>
+                  )}
+                  <Button size="icon" variant="ghost" onClick={() => removeFile(audioFile.id)} disabled={audioFile.status === 'processing'} className="text-muted-foreground hover:text-destructive">
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Overall Progress */}
+      {isProcessing && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Overall Progress</span>
+            <span className="text-accent font-mono">{overallProgress}%</span>
+          </div>
+          <Progress value={overallProgress} className="h-2" />
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      {files.length > 0 && (
+        <div className="flex gap-3">
+          <Button
+            className="flex-1 cinema-button"
+            onClick={processAllFiles}
+            disabled={isProcessing || pendingCount === 0}
+          >
+            {isProcessing ? (
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Processing...</>
+            ) : (
+              <><Play className="w-5 h-5 mr-2" />Process All ({pendingCount})</>
+            )}
+          </Button>
+          
+          {completedCount > 0 && (
+            <Button variant="outline" onClick={downloadAll} disabled={isProcessing} className="border-green-500/30 text-green-500 hover:bg-green-500/10">
+              <Download className="w-4 h-4 mr-2" />Download All ({completedCount})
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
