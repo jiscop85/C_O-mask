@@ -112,4 +112,86 @@ export default function BatchAudioProcessor({ settings, processAudioFn }: BatchA
     }
 
     for (const audioFile of pendingFiles) {
+      // Update status to processing
+      setFiles(prev => prev.map(f => 
+        f.id === audioFile.id ? { ...f, status: 'processing', progress: 0 } : f
+      ));
+
+      try {
+        // Simulate progress updates
+        const progressInterval = setInterval(() => {
+          setFiles(prev => prev.map(f => 
+            f.id === audioFile.id && f.status === 'processing'
+              ? { ...f, progress: Math.min(f.progress + 10, 90) }
+              : f
+          ));
+        }, 200);
+
+        // Process the audio
+        const processedBlob = await processAudioFn(audioFile.file, {
+          pitch: settings.pitch,
+          speed: settings.speed,
+          reverb: settings.reverb,
+          voiceModel: settings.voiceModel,
+        });
+
+        clearInterval(progressInterval);
+
+        if (processedBlob) {
+          setFiles(prev => prev.map(f => 
+            f.id === audioFile.id 
+              ? { ...f, status: 'completed', progress: 100, processedBlob }
+              : f
+          ));
+          completedCount++;
+        } else {
+          throw new Error('Processing returned no result');
+        }
+      } catch (error: any) {
+        setFiles(prev => prev.map(f => 
+          f.id === audioFile.id 
+            ? { ...f, status: 'failed', progress: 0, error: error.message || 'Processing failed' }
+            : f
+        ));
+      }
+
+      setOverallProgress(Math.round(((completedCount + 1) / totalFiles) * 100));
+    }
+
+    setIsProcessing(false);
+    
+    const successCount = files.filter(f => f.status === 'completed').length + completedCount;
+    const failCount = files.filter(f => f.status === 'failed').length;
+    
+    if (failCount === 0) {
+      toast.success(`Batch complete! ${successCount} files processed.`);
+    } else {
+      toast.warning(`Processed ${successCount} files. ${failCount} failed.`);
+    }
+  };
+
+  const downloadFile = (audioFile: AudioFile) => {
+    if (!audioFile.processedBlob) return;
+    
+    const url = URL.createObjectURL(audioFile.processedBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `processed-${audioFile.name.replace(/\.[^/.]+$/, '')}.wav`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Downloaded: ${audioFile.name}`);
+  };
+
+  const downloadAll = () => {
+    const completedFiles = files.filter(f => f.status === 'completed' && f.processedBlob);
+    completedFiles.forEach(f => downloadFile(f));
+    toast.success(`Downloaded ${completedFiles.length} files`);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
 
