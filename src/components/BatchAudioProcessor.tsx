@@ -98,4 +98,18 @@ export default function BatchAudioProcessor({ settings, processAudioFn }: BatchA
     const totalFiles = pendingFiles.length;
     let completedCount = 0;
 
- 
+    // Notify backend about batch job start
+    try {
+      await supabase.functions.invoke('batch-audio', {
+        body: {
+          action: 'start',
+          files: pendingFiles.map(f => ({ id: f.id, name: f.name })),
+          settings,
+        },
+      });
+    } catch (error) {
+      console.log('Batch tracking not available, processing locally');
+    }
+
+    for (const audioFile of pendingFiles) {
+
