@@ -177,3 +177,69 @@ const AnimatedCharacter = ({ emailFocused, passwordFocused, passwordVisible }: A
         <circle cx="135" cy="45" r="3" fill="#333" />
       </motion.g>
 
+      {/* Face */}
+      <ellipse cx="100" cy="110" rx="60" ry="65" fill="url(#faceGradient)" />
+      
+      {/* Ears */}
+      <ellipse cx="42" cy="105" rx="10" ry="15" fill="#e8c9a8" />
+      <ellipse cx="158" cy="105" rx="10" ry="15" fill="#e8c9a8" />
+
+      {/* Eyebrows */}
+      <motion.path
+        d="M55 78 Q70 70 85 78"
+        stroke="#5a4a3a"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+        animate={{
+          d: emailFocused 
+            ? "M55 72 Q70 65 85 72" 
+            : passwordFocused && !passwordVisible 
+              ? "M55 82 Q70 82 85 82" 
+              : "M55 78 Q70 70 85 78"
+        }}
+        transition={{ duration: 0.3 }}
+      />
+      <motion.path
+        d="M115 78 Q130 70 145 78"
+        stroke="#5a4a3a"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+        animate={{
+          d: emailFocused 
+            ? "M115 72 Q130 65 145 72" 
+            : passwordFocused && !passwordVisible 
+              ? "M115 82 Q130 82 145 82" 
+              : "M115 78 Q130 70 145 78"
+        }}
+        transition={{ duration: 0.3 }}
+      />
+
+      {/* Left Eye */}
+      <g transform="translate(70, 95)">
+        <ellipse cx="0" cy="0" rx="18" ry="15" fill="white" />
+        <motion.g
+          animate={{
+            scaleY: eyeState === 'closed' ? 0.1 : eyeState === 'peek' ? 0.4 : 1,
+            y: eyeState === 'peek' ? 5 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.circle
+            cx="0"
+            cy="0"
+            r="10"
+            fill="#3a2a1a"
+            style={{ x: leftEyeX, y: leftEyeY }}
+          />
+          <motion.circle
+            cx="-3"
+            cy="-3"
+            r="4"
+            fill="white"
+            style={{ x: leftEyeX, y: leftEyeY }}
+            animate={{ opacity: eyeState === 'closed' ? 0 : 1 }}
+          />
+        </motion.g>
+dCharacter;
