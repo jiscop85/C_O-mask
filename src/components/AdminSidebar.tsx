@@ -243,3 +243,113 @@ const AnimatedCharacter = ({ emailFocused, passwordFocused, passwordVisible }: A
           />
         </motion.g>
 dCharacter;
+        {/* Eyelid for closed/peek state */}
+        <motion.path
+          d="M-18 0 Q0 0 18 0"
+          stroke="#e8c9a8"
+          strokeWidth="4"
+          fill="none"
+          animate={{
+            d: eyeState === 'closed' 
+              ? "M-18 0 Q0 0 18 0" 
+              : eyeState === 'peek'
+                ? "M-18 -5 Q0 5 18 -5"
+                : "M-18 -15 Q0 -15 18 -15"
+          }}
+          transition={{ duration: 0.3 }}
+        />
+      </g>
+
+      {/* Right Eye */}
+      <g transform="translate(130, 95)">
+        <ellipse cx="0" cy="0" rx="18" ry="15" fill="white" />
+        <motion.g
+          animate={{
+            scaleY: eyeState === 'closed' ? 0.1 : eyeState === 'peek' ? 0.4 : 1,
+            y: eyeState === 'peek' ? 5 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.circle
+            cx="0"
+            cy="0"
+            r="10"
+            fill="#3a2a1a"
+            style={{ x: rightEyeX, y: rightEyeY }}
+          />
+          <motion.circle
+            cx="-3"
+            cy="-3"
+            r="4"
+            fill="white"
+            style={{ x: rightEyeX, y: rightEyeY }}
+            animate={{ opacity: eyeState === 'closed' ? 0 : 1 }}
+          />
+        </motion.g>
+        {/* Right eyelid */}
+        <motion.path
+          d="M-18 0 Q0 0 18 0"
+          stroke="#e8c9a8"
+          strokeWidth="4"
+          fill="none"
+          animate={{
+            d: eyeState === 'closed' 
+              ? "M-18 0 Q0 0 18 0" 
+              : eyeState === 'peek'
+                ? "M-18 -5 Q0 5 18 -5"
+                : "M-18 -15 Q0 -15 18 -15"
+          }}
+          transition={{ duration: 0.3 }}
+        />
+        {/* Wink for email focus */}
+        {emailFocused && (
+          <motion.path
+            d="M-15 0 Q0 5 15 0"
+            stroke="#3a2a1a"
+            strokeWidth="2"
+            fill="none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+        )}
+      </g>
+
+      {/* Nose */}
+      <path d="M95 115 Q100 130 105 115" stroke="#d4b896" strokeWidth="2" fill="none" />
+
+      {/* Mouth */}
+      <motion.path
+        d={getMouthPath()}
+        stroke="#8b6b5a"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+        animate={{ d: getMouthPath() }}
+        transition={{ duration: 0.3 }}
+      />
+
+      {/* Blush when happy */}
+      <motion.ellipse
+        cx="55"
+        cy="125"
+        rx="12"
+        ry="6"
+        fill="hsl(0 60% 70% / 0.4)"
+        animate={{ opacity: emailFocused ? 0.6 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      <motion.ellipse
+        cx="145"
+        cy="125"
+        rx="12"
+        ry="6"
+        fill="hsl(0 60% 70% / 0.4)"
+        animate={{ opacity: emailFocused ? 0.6 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.svg>
+  );
+};
+
+export default Animate
