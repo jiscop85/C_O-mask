@@ -86,5 +86,141 @@ export function ContactSection() {
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mt-4" />
         </div>
+      <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+          {/* Contact Form */}
+          <div className="glass rounded-2xl p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  {t('contact.name')}
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="bg-secondary/50 border-border/50 focus:border-primary"
+                  placeholder={language === 'fa' ? 'نام شما' : 'John Doe'}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  {t('contact.email')}
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="bg-secondary/50 border-border/50 focus:border-primary"
+                  placeholder={language === 'fa' ? 'ایمیل شما' : 'john@example.com'}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium mb-2">
+                  {t('contact.message')}
+                </label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  rows={5}
+                  className="bg-secondary/50 border-border/50 focus:border-primary resize-none"
+                  placeholder={language === 'fa' ? 'پیام شما...' : 'Your message...'}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="hero"
+                size="lg"
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                    {language === 'fa' ? 'در حال ارسال...' : 'Sending...'}
+                  </span>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    {t('contact.send')}
+                  </>
+                )}
+              </Button>
+            </form>
+          </div>
+
+          {/* Contact Info */}
+          <div className="flex flex-col justify-center">
+            <div className="space-y-8">
+              {/* Direct Contact */}
+              <div>
+                <h3 className="text-xl font-bold mb-6">{t('contact.or')}</h3>
+                <div className="flex flex-wrap gap-4">
+                  {socialLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center gap-3 px-6 py-4 glass rounded-xl transition-all duration-300 ${link.color}`}
+                    >
+                      {link.icon}
+                      <span className="font-medium">{link.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="glass rounded-xl p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-primary/10 rounded-lg">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold mb-1">
+                      {language === 'fa' ? 'موقعیت' : 'Location'}
+                    </h4>
+                    <p className="text-muted-foreground">
+                      {language === 'fa' 
+                        ? 'تهران، ایران • در دسترس برای کار ریموت در سراسر جهان'
+                        : 'Tehran, Iran • Available for remote work worldwide'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Terminal Style Message */}
+              <div className="glass rounded-xl p-6 font-mono text-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-3 h-3 rounded-full bg-destructive" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                </div>
+                <div className="space-y-1 text-muted-foreground">
+                  <p><span className="text-primary">$</span> whoami</p>
+                  <p className="text-foreground">Arash Javadifar - AI Engineer</p>
+                  <p><span className="text-primary">$</span> echo $AVAILABILITY</p>
+                  <p className="text-green-400">Open to new opportunities_</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
   
